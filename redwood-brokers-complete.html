@@ -1,0 +1,1538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redwood Federal Brokers - Complete System</title>
+    <style>
+        :root {
+            --redwood-primary: #8B2635;
+            --redwood-dark: #5C1A23;
+            --redwood-light: #B8545E;
+            --federal-gold: #C9A227;
+            --federal-blue: #1B3A5F;
+            --forest-green: #2D5016;
+            --cream: #F5F1E8;
+            --white: #FFFFFF;
+            --gray-light: #E8E4DC;
+            --gray-dark: #4A4A4A;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--cream);
+            color: var(--gray-dark);
+            line-height: 1.6;
+        }
+        .hidden { display: none !important; }
+        
+        /* Navigation */
+        .navbar {
+            background: linear-gradient(135deg, var(--redwood-primary) 0%, var(--redwood-dark) 100%);
+            padding: 1rem 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--white);
+        }
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+            background: var(--federal-gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            border: 3px solid var(--white);
+        }
+        .logo-main { font-size: 1.5rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+        .logo-sub { font-size: 0.75rem; letter-spacing: 2px; opacity: 0.9; }
+        .nav-links { display: flex; gap: 2rem; list-style: none; }
+        .nav-links a {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .nav-links a:hover, .nav-links a.active {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid var(--federal-gold);
+        }
+        .user-info { display: flex; align-items: center; gap: 1rem; color: var(--white); }
+        .btn-logout {
+            background: transparent;
+            border: 2px solid var(--federal-gold);
+            color: var(--federal-gold);
+            padding: 0.5rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        /* Auth Pages */
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--federal-blue) 0%, var(--redwood-dark) 100%);
+            padding: 2rem;
+        }
+        .auth-box {
+            background: var(--white);
+            padding: 3rem;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 450px;
+            position: relative;
+        }
+        .auth-box::before {
+            content: '🌲';
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 60px;
+            background: var(--federal-gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            border: 4px solid var(--white);
+        }
+        .auth-title { text-align: center; margin-bottom: 2rem; color: var(--redwood-dark); font-size: 1.75rem; margin-top: 1rem; }
+        
+        /* Forms */
+        .form-group { margin-bottom: 1.5rem; }
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--redwood-dark);
+            text-transform: uppercase;
+            font-size: 0.875rem;
+        }
+        .form-input {
+            width: 100%;
+            padding: 0.875rem;
+            border: 2px solid var(--gray-light);
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        .form-input:focus { outline: none; border-color: var(--redwood-primary); }
+        .btn {
+            padding: 0.875rem 2rem;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-transform: uppercase;
+        }
+        .btn-primary { background: var(--redwood-primary); color: var(--white); width: 100%; }
+        .btn-primary:hover { background: var(--redwood-dark); }
+        .btn-success { background: var(--forest-green); color: var(--white); }
+        .btn-danger { background: var(--danger); color: var(--white); }
+        .btn-warning { background: #ffc107; color: #212529; }
+        
+        /* Layout */
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        .card {
+            background: var(--white);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-top: 4px solid var(--redwood-primary);
+        }
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--gray-light);
+        }
+        .card-title { font-size: 1.5rem; color: var(--redwood-dark); }
+        
+        /* Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            border-left: 4px solid var(--federal-gold);
+        }
+        .stat-label { font-size: 0.875rem; color: var(--gray-dark); text-transform: uppercase; letter-spacing: 1px; }
+        .stat-value { font-size: 2rem; font-weight: 700; color: var(--federal-blue); }
+        .positive { color: var(--forest-green); }
+        .negative { color: var(--redwood-primary); }
+        
+        /* Tables */
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        .data-table th {
+            background: var(--redwood-primary);
+            color: var(--white);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+        }
+        .data-table td { padding: 1rem; border-bottom: 1px solid var(--gray-light); }
+        .data-table tr:hover { background: var(--cream); }
+        
+        /* Trading */
+        .trading-panel { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; }
+        .stock-search { display: flex; gap: 1rem; margin-bottom: 1.5rem; }
+        .stock-info {
+            background: var(--cream);
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+        .stock-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem; }
+        .stock-symbol { font-size: 2rem; font-weight: 700; color: var(--redwood-dark); }
+        .stock-price { font-size: 2.5rem; font-weight: 700; color: var(--federal-blue); }
+        .trade-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 1rem; }
+        
+        /* Admin */
+        .admin-layout { display: grid; grid-template-columns: 250px 1fr; min-height: 100vh; }
+        .admin-sidebar {
+            background: var(--redwood-dark);
+            color: var(--white);
+            padding: 2rem 1rem;
+        }
+        .admin-nav { list-style: none; margin-top: 2rem; }
+        .admin-nav li { margin-bottom: 0.5rem; }
+        .admin-nav a {
+            display: block;
+            padding: 0.875rem 1rem;
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .admin-nav a:hover, .admin-nav a.active {
+            background: rgba(255,255,255,0.1);
+            color: var(--white);
+            border-left: 3px solid var(--federal-gold);
+        }
+        .admin-main { padding: 2rem; background: var(--cream); }
+        .admin-stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .status-approved { background: #d4edda; color: #155724; }
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-suspended { background: #f8d7da; color: #721c24; }
+        
+        /* Charts */
+        .chart-container { height: 300px; position: relative; }
+        
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-content {
+            background: var(--white);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-header {
+            background: var(--redwood-primary);
+            color: var(--white);
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .modal-body { padding: 2rem; }
+        .close-modal { background: none; border: none; color: var(--white); font-size: 1.5rem; cursor: pointer; }
+        
+        /* Footer */
+        .footer {
+            background: var(--redwood-dark);
+            color: var(--white);
+            padding: 2rem;
+            text-align: center;
+            margin-top: 4rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .trading-panel, .admin-layout { grid-template-columns: 1fr; }
+            .admin-sidebar { display: none; }
+            .stats-grid, .admin-stats-row { grid-template-columns: 1fr; }
+            .nav-links { display: none; }
+        }
+        
+        /* Notifications */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            color: var(--white);
+            font-weight: 600;
+            z-index: 10000;
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from { transform: translateX(400px); }
+            to { transform: translateX(0); }
+        }
+        .notification.success { background: var(--forest-green); }
+        .notification.error { background: var(--redwood-primary); }
+    </style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="navbar" id="mainNav">
+    <div class="nav-container">
+        <a href="#" class="logo" onclick="showPage('dashboard')">
+            <div class="logo-icon">🌲</div>
+            <div>
+                <div class="logo-main">Redwood</div>
+                <div class="logo-sub">Federal Brokers</div>
+            </div>
+        </a>
+        <ul class="nav-links" id="navLinks">
+            <li><a onclick="showPage('dashboard')" id="nav-dashboard">Dashboard</a></li>
+            <li><a onclick="showPage('trading')" id="nav-trading">Trade</a></li>
+            <li><a onclick="showPage('admin')" id="nav-admin" class="hidden">Admin</a></li>
+        </ul>
+        <div class="user-info" id="userInfo">
+            <span id="usernameDisplay">Guest</span>
+            <button class="btn-logout" onclick="logout()">Logout</button>
+        </div>
+    </div>
+</nav>
+
+<!-- Auth Page -->
+<div id="page-auth" class="auth-container">
+    <div class="auth-box">
+        <h2 class="auth-title">Redwood Federal Brokers</h2>
+        <p style="text-align: center; color: var(--gray-dark); margin-bottom: 2rem;">Secure Investment Platform</p>
+        
+        <div id="loginForm">
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-input" id="loginEmail" placeholder="admin@redwood.com" value="admin@redwood.com">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-input" id="loginPassword" placeholder="admin123" value="admin123">
+            </div>
+            <div class="form-group hidden" id="adminKeyGroup">
+                <label class="form-label">Admin Key</label>
+                <input type="password" class="form-input" id="adminKey" placeholder="For admin access only">
+            </div>
+            <button class="btn btn-primary" onclick="login()">Secure Login</button>
+            
+            <div style="text-align: center; margin-top: 1.5rem;">
+                <p>Need an account? <a href="#" onclick="toggleAuthMode()" style="color: var(--redwood-primary);">Register</a></p>
+                <p style="font-size: 0.75rem; margin-top: 1rem; color: #666;">
+                    🔒 256-bit SSL | FDIC Insured Simulation
+                </p>
+            </div>
+        </div>
+        
+        <div id="registerForm" class="hidden">
+            <div class="form-group">
+                <label class="form-label">Full Name</label>
+                <input type="text" class="form-input" id="regName" placeholder="John Doe">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-input" id="regEmail" placeholder="john@email.com">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" class="form-input" id="regPassword" placeholder="Min 6 characters">
+            </div>
+            <button class="btn btn-primary" onclick="register()">Open Account</button>
+            
+            <div style="text-align: center; margin-top: 1.5rem;">
+                <p>Have an account? <a href="#" onclick="toggleAuthMode()" style="color: var(--redwood-primary);">Sign In</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Dashboard Page -->
+<div id="page-dashboard" class="hidden">
+    <div style="background: linear-gradient(135deg, var(--federal-blue) 0%, var(--redwood-dark) 100%); color: white; padding: 2rem; text-align: center;">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">🏛️</div>
+        <h2>Welcome to Your Portfolio</h2>
+        <p style="opacity: 0.9;">Real-time market data and secure trading</p>
+    </div>
+    
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Total Portfolio Value</div>
+                <div class="stat-value" id="dash-totalValue">$100,000.00</div>
+                <div class="positive" id="dash-totalChange">+0.00%</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Available Cash</div>
+                <div class="stat-value" id="dash-cash">$100,000.00</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Holdings</div>
+                <div class="stat-value" id="dash-holdings">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Day's P&L</div>
+                <div class="stat-value positive" id="dash-pnl">+$0.00</div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">📈 Portfolio Performance</h3>
+            </div>
+            <div class="chart-container">
+                <canvas id="portfolioChart"></canvas>
+            </div>
+        </div>
+        
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 2rem;">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">📊 Your Holdings</h3>
+                    <button class="btn btn-primary" onclick="showPage('trading')" style="width: auto;">+ New Trade</button>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Symbol</th>
+                            <th>Shares</th>
+                            <th>Avg Price</th>
+                            <th>Value</th>
+                            <th>P&L</th>
+                        </tr>
+                    </thead>
+                    <tbody id="holdingsTable">
+                        <tr><td colspan="5" style="text-align: center; padding: 2rem;">No holdings yet. Start trading!</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">🥧 Allocation</h3>
+                </div>
+                <div class="chart-container" style="height: 250px;">
+                    <canvas id="allocationChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">📝 Recent Transactions</h3>
+            </div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Type</th>
+                        <th>Symbol</th>
+                        <th>Shares</th>
+                        <th>Price</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody id="transactionsTable">
+                    <tr><td colspan="6" style="text-align: center; padding: 2rem;">No transactions yet</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Trading Page -->
+<div id="page-trading" class="hidden">
+    <div class="container" style="margin-top: 2rem;">
+        <div class="trading-panel">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">🔍 Market Search</h3>
+                </div>
+                
+                <div class="stock-search">
+                    <input type="text" class="form-input" id="searchSymbol" placeholder="Enter symbol (e.g., AAPL)" maxlength="5" style="text-transform: uppercase;">
+                    <button class="btn btn-primary" onclick="searchStock()" style="width: auto;">Search</button>
+                </div>
+                
+                <div id="stockResult" class="hidden">
+                    <div class="stock-info">
+                        <div class="stock-header">
+                            <div>
+                                <div class="stock-symbol" id="stockSymbol">AAPL</div>
+                                <div id="stockName" style="color: #666;">Apple Inc.</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div class="stock-price" id="stockPrice">$0.00</div>
+                                <div id="stockChange" class="positive">+0.00%</div>
+                            </div>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1rem; font-size: 0.875rem;">
+                            <div>
+                                <div style="color: #666;">Day High</div>
+                                <div id="dayHigh" style="font-weight: 600;">--</div>
+                            </div>
+                            <div>
+                                <div style="color: #666;">Day Low</div>
+                                <div id="dayLow" style="font-weight: 600;">--</div>
+                            </div>
+                            <div>
+                                <div style="color: #666;">Volume</div>
+                                <div id="volume" style="font-weight: 600;">--</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-container" style="height: 200px; margin-bottom: 1.5rem;">
+                        <canvas id="stockChart"></canvas>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Shares</label>
+                        <input type="number" class="form-input" id="tradeShares" min="1" value="1" oninput="updateTradeTotal()">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Estimated Total</label>
+                        <input type="text" class="form-input" id="tradeTotal" readonly value="$0.00">
+                    </div>
+                    
+                    <div class="trade-buttons">
+                        <button class="btn btn-success" onclick="executeTrade('buy')">BUY</button>
+                        <button class="btn btn-danger" onclick="executeTrade('sell')">SELL</button>
+                    </div>
+                </div>
+                
+                <div id="searchPlaceholder" style="text-align: center; padding: 3rem; color: #666;">
+                    <div style="font-size: 3rem; margin-bottom: 1rem;">📈</div>
+                    <p>Search for a stock symbol to begin trading</p>
+                    <p style="font-size: 0.875rem; margin-top: 1rem;">Try: AAPL, MSFT, GOOGL, TSLA, AMZN</p>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">💰 Account Status</h3>
+                </div>
+                
+                <div style="margin-bottom: 1.5rem;">
+                    <div class="stat-label">Buying Power</div>
+                    <div class="stat-value" id="trade-cash" style="font-size: 2rem;">$100,000.00</div>
+                </div>
+                
+                <div style="margin-bottom: 1.5rem;">
+                    <div class="stat-label">Holdings Value</div>
+                    <div style="font-size: 1.5rem; color: var(--federal-blue); font-weight: 700;" id="trade-holdings">$0.00</div>
+                </div>
+                
+                <hr style="border: none; border-top: 2px solid var(--gray-light); margin: 1.5rem 0;">
+                
+                <h4 style="margin-bottom: 1rem; color: var(--redwood-dark);">Quick Trade History</h4>
+                <div id="miniTransactions" style="max-height: 200px; overflow-y: auto;">
+                    <p style="color: #666; font-size: 0.875rem;">No recent trades</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">📋 Market Movers</h3>
+            </div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Symbol</th>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Change</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="marketTable">
+                    <!-- Populated by JS -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Admin Page -->
+<div id="page-admin" class="hidden">
+    <div class="admin-layout">
+        <aside class="admin-sidebar">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">🏛️</div>
+                <div style="font-weight: 700;">Redwood Federal</div>
+                <div style="font-size: 0.75rem; opacity: 0.8;">Administration</div>
+            </div>
+            <ul class="admin-nav">
+                <li><a onclick="showAdminTab('overview')" class="active" id="admin-tab-overview">📊 Overview</a></li>
+                <li><a onclick="showAdminTab('users')" id="admin-tab-users">👥 Users</a></li>
+                <li><a onclick="showAdminTab('approvals')" id="admin-tab-approvals">⏳ Approvals</a></li>
+                <li><a onclick="showAdminTab('transactions')" id="admin-tab-transactions">💹 Transactions</a></li>
+                <li style="margin-top: 2rem;"><a onclick="showPage('dashboard')">← Back to Trading</a></li>
+                <li><a onclick="logout()">🚪 Logout</a></li>
+            </ul>
+        </aside>
+        
+        <main class="admin-main">
+            <div class="admin-header">
+                <div>
+                    <h1 style="margin: 0; color: var(--redwood-dark);">Administrator Dashboard</h1>
+                    <p style="margin: 0.5rem 0 0 0; color: #666; font-size: 0.875rem;">System Management Console</p>
+                </div>
+                <div style="text-align: right;">
+                    <div id="adminName" style="font-weight: 600; color: var(--redwood-dark);">Administrator</div>
+                    <div style="font-size: 0.875rem; color: #666;">System Admin</div>
+                </div>
+            </div>
+            
+            <!-- Overview Tab -->
+            <div id="admin-section-overview">
+                <div class="admin-stats-row">
+                    <div class="stat-card">
+                        <div class="stat-label">Total Users</div>
+                        <div class="stat-value" id="admin-totalUsers">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Pending Approvals</div>
+                        <div class="stat-value" id="admin-pending" style="color: #856404;">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Total Volume</div>
+                        <div class="stat-value" id="admin-volume">$0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Transactions</div>
+                        <div class="stat-value" id="admin-transactions">0</div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Recent System Activity</h3>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Time</th>
+                                <th>User</th>
+                                <th>Action</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-activity">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Users Tab -->
+            <div id="admin-section-users" class="hidden">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">All User Accounts</h3>
+                        <input type="text" class="form-input" placeholder="Search users..." style="width: 250px;" onkeyup="filterUsers(this.value)">
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                                <th>Portfolio</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-users-table">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Approvals Tab -->
+            <div id="admin-section-approvals" class="hidden">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Pending Account Approvals</h3>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Email</th>
+                                <th>Registered</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-approvals-table">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <!-- Transactions Tab -->
+            <div id="admin-section-transactions" class="hidden">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">All System Transactions</h3>
+                    </div>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>User</th>
+                                <th>Type</th>
+                                <th>Symbol</th>
+                                <th>Shares</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-transactions-table">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<!-- User Detail Modal -->
+<div class="modal-overlay" id="userModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 style="margin: 0;">User Details</h3>
+            <button class="close-modal" onclick="closeUserModal()">&times;</button>
+        </div>
+        <div class="modal-body" id="userModalBody">
+            <!-- Populated by JS -->
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-warning" onclick="toggleUserStatus()">Suspend/Reactivate</button>
+            <button class="btn btn-danger" onclick="resetUserPortfolio()">Reset Portfolio</button>
+            <button class="btn btn-primary" onclick="closeUserModal()">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer class="footer" id="mainFooter">
+    <div style="font-size: 2rem; margin-bottom: 1rem;">🌲</div>
+    <p><strong>Redwood Federal Brokers</strong></p>
+    <p style="font-size: 0.75rem; opacity: 0.7; max-width: 600px; margin: 1rem auto;">
+        Educational simulation for school purposes only. Not a real financial institution. 
+        No actual money involved. Market data may be simulated.
+    </p>
+    <p style="font-size: 0.875rem; opacity: 0.6;">© 2024 Redwood Federal Brokers</p>
+</footer>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+// ==========================================
+// REDWOOD FEDERAL BROKERS - COMPLETE SYSTEM
+// ==========================================
+
+// State Management
+const AppState = {
+    currentUser: null,
+    users: [],
+    portfolios: {},
+    transactions: {},
+    currentStock: null,
+    selectedUserId: null,
+    charts: {}
+};
+
+// Initialize with default admin
+function initDatabase() {
+    const defaultAdmin = {
+        id: 'admin-001',
+        username: 'Administrator',
+        email: 'admin@redwood.com',
+        password: 'admin123', // In production, this would be hashed
+        fullName: 'System Administrator',
+        role: 'admin',
+        status: 'approved',
+        createdAt: new Date().toISOString()
+    };
+    
+    AppState.users = [defaultAdmin];
+    AppState.portfolios['admin-001'] = { cash: 1000000, holdings: [], totalDeposited: 1000000 };
+    AppState.transactions['admin-001'] = [];
+}
+
+// Mock Stock Data
+const mockStocks = {
+    'AAPL': { name: 'Apple Inc.', basePrice: 178.50 },
+    'MSFT': { name: 'Microsoft Corp.', basePrice: 380.20 },
+    'GOOGL': { name: 'Alphabet Inc.', basePrice: 142.30 },
+    'TSLA': { name: 'Tesla Inc.', basePrice: 245.60 },
+    'AMZN': { name: 'Amazon.com Inc.', basePrice: 155.40 },
+    'NVDA': { name: 'NVIDIA Corp.', basePrice: 495.80 },
+    'META': { name: 'Meta Platforms', basePrice: 505.00 },
+    'NFLX': { name: 'Netflix Inc.', basePrice: 635.20 }
+};
+
+// Utility Functions
+function formatCurrency(num) {
+    return '$' + parseFloat(num).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+}
+
+function generateId() {
+    return Date.now().toString(36) + Math.random().toString(36).substr(2);
+}
+
+function showNotification(message, type = 'success') {
+    const div = document.createElement('div');
+    div.className = `notification ${type}`;
+    div.textContent = message;
+    document.body.appendChild(div);
+    setTimeout(() => div.remove(), 3000);
+}
+
+// Navigation
+function showPage(page) {
+    // Hide all pages
+    document.querySelectorAll('[id^="page-"]').forEach(el => el.classList.add('hidden'));
+    document.getElementById('mainNav').classList.add('hidden');
+    document.getElementById('mainFooter').classList.add('hidden');
+    
+    // Show requested page
+    document.getElementById(`page-${page}`).classList.remove('hidden');
+    
+    if (page !== 'auth') {
+        document.getElementById('mainNav').classList.remove('hidden');
+        document.getElementById('mainFooter').classList.remove('hidden');
+    }
+    
+    // Update nav active state
+    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+    if (document.getElementById(`nav-${page}`)) {
+        document.getElementById(`nav-${page}`).classList.add('active');
+    }
+    
+    // Page-specific initialization
+    if (page === 'dashboard') loadDashboard();
+    if (page === 'trading') loadTrading();
+    if (page === 'admin') loadAdmin();
+}
+
+function toggleAuthMode() {
+    document.getElementById('loginForm').classList.toggle('hidden');
+    document.getElementById('registerForm').classList.toggle('hidden');
+}
+
+// Authentication
+function login() {
+    const email = document.getElementById('loginEmail').value;
+    const password = document.getElementById('loginPassword').value;
+    const adminKey = document.getElementById('adminKey').value;
+    
+    const user = AppState.users.find(u => u.email === email && u.password === password);
+    
+    if (!user) {
+        showNotification('Invalid credentials', 'error');
+        return;
+    }
+    
+    if (user.status === 'suspended') {
+        showNotification('Account suspended', 'error');
+        return;
+    }
+    
+    if (user.status === 'pending') {
+        showNotification('Account pending approval', 'error');
+        return;
+    }
+    
+    if (user.role === 'admin' && adminKey !== 'redwood-admin-2024') {
+        showNotification('Invalid admin key', 'error');
+        return;
+    }
+    
+    AppState.currentUser = user;
+    document.getElementById('usernameDisplay').textContent = user.username;
+    
+    // Show admin link if admin
+    if (user.role === 'admin') {
+        document.getElementById('nav-admin').classList.remove('hidden');
+    }
+    
+    showNotification(`Welcome, ${user.username}!`);
+    showPage('dashboard');
+}
+
+function register() {
+    const name = document.getElementById('regName').value;
+    const email = document.getElementById('regEmail').value;
+    const password = document.getElementById('regPassword').value;
+    
+    if (!name || !email || !password) {
+        showNotification('Please fill all fields', 'error');
+        return;
+    }
+    
+    if (AppState.users.find(u => u.email === email)) {
+        showNotification('Email already exists', 'error');
+        return;
+    }
+    
+    const newUser = {
+        id: generateId(),
+        username: name,
+        email: email,
+        password: password,
+        fullName: name,
+        role: 'user',
+        status: 'pending',
+        createdAt: new Date().toISOString()
+    };
+    
+    AppState.users.push(newUser);
+    AppState.portfolios[newUser.id] = { cash: 100000, holdings: [], totalDeposited: 100000 };
+    AppState.transactions[newUser.id] = [];
+    
+    showNotification('Registration submitted for approval!');
+    toggleAuthMode();
+}
+
+function logout() {
+    AppState.currentUser = null;
+    document.getElementById('nav-admin').classList.add('hidden');
+    showPage('auth');
+    showNotification('Logged out successfully');
+}
+
+// Dashboard Functions
+function loadDashboard() {
+    if (!AppState.currentUser) return;
+    
+    const portfolio = AppState.portfolios[AppState.currentUser.id];
+    const holdings = portfolio.holdings;
+    
+    // Calculate values
+    let holdingsValue = 0;
+    holdings.forEach(h => {
+        const stock = mockStocks[h.symbol] || { basePrice: 100 };
+        const currentPrice = stock.basePrice * (1 + (Math.random() * 0.1 - 0.05));
+        holdingsValue += h.shares * currentPrice;
+    });
+    
+    const totalValue = portfolio.cash + holdingsValue;
+    const dayChange = (Math.random() * 2000 - 1000);
+    
+    // Update stats
+    document.getElementById('dash-totalValue').textContent = formatCurrency(totalValue);
+    document.getElementById('dash-cash').textContent = formatCurrency(portfolio.cash);
+    document.getElementById('dash-holdings').textContent = holdings.length;
+    
+    const pnlElem = document.getElementById('dash-pnl');
+    pnlElem.textContent = (dayChange > 0 ? '+' : '') + formatCurrency(dayChange);
+    pnlElem.className = 'stat-value ' + (dayChange > 0 ? 'positive' : 'negative');
+    
+    // Holdings table
+    const tbody = document.getElementById('holdingsTable');
+    if (holdings.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 2rem;">No holdings yet. <a href="#" onclick="showPage(\'trading\')">Start trading!</a></td></tr>';
+    } else {
+        tbody.innerHTML = holdings.map(h => {
+            const stock = mockStocks[h.symbol] || { basePrice: 100 };
+            const currentPrice = stock.basePrice * (1 + (Math.random() * 0.1 - 0.05));
+            const value = h.shares * currentPrice;
+            const pl = value - (h.shares * h.avgPrice);
+            return `
+                <tr>
+                    <td><strong>${h.symbol}</strong></td>
+                    <td>${h.shares}</td>
+                    <td>${formatCurrency(h.avgPrice)}</td>
+                    <td>${formatCurrency(value)}</td>
+                    <td class="${pl >= 0 ? 'positive' : 'negative'}">${pl >= 0 ? '+' : ''}${formatCurrency(pl)}</td>
+                </tr>
+            `;
+        }).join('');
+    }
+    
+    // Transactions
+    const trans = AppState.transactions[AppState.currentUser.id] || [];
+    const transTbody = document.getElementById('transactionsTable');
+    if (trans.length === 0) {
+        transTbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 2rem;">No transactions yet</td></tr>';
+    } else {
+        transTbody.innerHTML = trans.slice().reverse().map(t => `
+            <tr>
+                <td>${new Date(t.date).toLocaleDateString()}</td>
+                <td><span style="color: ${t.type === 'buy' ? 'var(--forest-green)' : 'var(--redwood-primary)'}; font-weight: 600; text-transform: uppercase;">${t.type}</span></td>
+                <td><strong>${t.symbol}</strong></td>
+                <td>${t.shares}</td>
+                <td>${formatCurrency(t.price)}</td>
+                <td>${formatCurrency(t.total)}</td>
+            </tr>
+        `).join('');
+    }
+    
+    // Charts
+    renderPortfolioChart(totalValue);
+    renderAllocationChart(holdings);
+}
+
+function renderPortfolioChart(currentValue) {
+    const ctx = document.getElementById('portfolioChart').getContext('2d');
+    
+    // Generate mock history
+    const labels = [];
+    const data = [];
+    let value = currentValue * 0.85;
+    
+    for (let i = 30; i >= 0; i--) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        labels.push(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+        value = value * (1 + (Math.random() * 0.04 - 0.015));
+        data.push(value);
+    }
+    
+    if (AppState.charts.portfolio) AppState.charts.portfolio.destroy();
+    
+    AppState.charts.portfolio = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Portfolio Value',
+                data: data,
+                borderColor: '#8B2635',
+                backgroundColor: 'rgba(139, 38, 53, 0.1)',
+                fill: true,
+                tension: 0.4,
+                pointRadius: 0,
+                pointHoverRadius: 6
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { ticks: { callback: v => '$' + (v/1000).toFixed(0) + 'k' } }
+            }
+        }
+    });
+}
+
+function renderAllocationChart(holdings) {
+    const ctx = document.getElementById('allocationChart').getContext('2d');
+    
+    if (holdings.length === 0) {
+        // Empty state
+        return;
+    }
+    
+    const labels = holdings.map(h => h.symbol);
+    const data = holdings.map(h => h.shares * h.avgPrice);
+    const colors = ['#8B2635', '#1B3A5F', '#C9A227', '#2D5016', '#B8545E'];
+    
+    if (AppState.charts.allocation) AppState.charts.allocation.destroy();
+    
+    AppState.charts.allocation = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: colors,
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '60%',
+            plugins: {
+                legend: { position: 'bottom', labels: { boxWidth: 12 } }
+            }
+        }
+    });
+}
+
+// Trading Functions
+function loadTrading() {
+    const portfolio = AppState.portfolios[AppState.currentUser.id];
+    let holdingsValue = 0;
+    portfolio.holdings.forEach(h => {
+        holdingsValue += h.shares * h.avgPrice;
+    });
+    
+    document.getElementById('trade-cash').textContent = formatCurrency(portfolio.cash);
+    document.getElementById('trade-holdings').textContent = formatCurrency(holdingsValue);
+    
+    // Load mini transactions
+    const trans = AppState.transactions[AppState.currentUser.id] || [];
+    const miniDiv = document.getElementById('miniTransactions');
+    if (trans.length === 0) {
+        miniDiv.innerHTML = '<p style="color: #666; font-size: 0.875rem;">No recent trades</p>';
+    } else {
+        miniDiv.innerHTML = trans.slice(-5).reverse().map(t => `
+            <div style="padding: 0.5rem; border-bottom: 1px solid var(--gray-light); font-size: 0.875rem;">
+                <div style="display: flex; justify-content: space-between;">
+                    <span style="color: ${t.type === 'buy' ? 'var(--forest-green)' : 'var(--redwood-primary)'}; font-weight: 600;">
+                        ${t.type.toUpperCase()} ${t.symbol}
+                    </span>
+                    <span style="color: #666;">${new Date(t.date).toLocaleDateString()}</span>
+                </div>
+                <div style="color: #666; font-size: 0.75rem;">
+                    ${t.shares} shares @ ${formatCurrency(t.price)}
+                </div>
+            </div>
+        `).join('');
+    }
+    
+    // Populate market table
+    const marketBody = document.getElementById('marketTable');
+    marketBody.innerHTML = Object.entries(mockStocks).map(([sym, data]) => {
+        const change = (Math.random() * 10 - 5).toFixed(2);
+        return `
+            <tr>
+                <td><strong>${sym}</strong></td>
+                <td>${data.name}</td>
+                <td>${formatCurrency(data.basePrice)}</td>
+                <td class="${change >= 0 ? 'positive' : 'negative'}">${change >= 0 ? '+' : ''}${change}%</td>
+                <td><button class="btn btn-primary" style="padding: 0.25rem 0.75rem; font-size: 0.875rem;" onclick="quickSearch('${sym}')">Trade</button></td>
+            </tr>
+        `;
+    }).join('');
+}
+
+function quickSearch(symbol) {
+    document.getElementById('searchSymbol').value = symbol;
+    searchStock();
+}
+
+function searchStock() {
+    const symbol = document.getElementById('searchSymbol').value.toUpperCase();
+    if (!symbol) return;
+    
+    const stock = mockStocks[symbol] || { 
+        name: `${symbol} Corporation`, 
+        basePrice: Math.random() * 200 + 50 
+    };
+    
+    // Simulate price movement
+    const change = (Math.random() * 6 - 3);
+    const currentPrice = stock.basePrice * (1 + change/100);
+    
+    AppState.currentStock = {
+        symbol: symbol,
+        name: stock.name,
+        price: currentPrice,
+        change: change
+    };
+    
+    document.getElementById('stockSymbol').textContent = symbol;
+    document.getElementById('stockName').textContent = stock.name;
+    document.getElementById('stockPrice').textContent = formatCurrency(currentPrice);
+    
+    const changeElem = document.getElementById('stockChange');
+    changeElem.textContent = (change > 0 ? '+' : '') + change.toFixed(2) + '%';
+    changeElem.className = 'stock-change ' + (change >= 0 ? 'positive' : 'negative');
+    
+    document.getElementById('dayHigh').textContent = formatCurrency(currentPrice * 1.02);
+    document.getElementById('dayLow').textContent = formatCurrency(currentPrice * 0.98);
+    document.getElementById('volume').textContent = (Math.random() * 50 + 10).toFixed(1) + 'M';
+    
+    document.getElementById('searchPlaceholder').classList.add('hidden');
+    document.getElementById('stockResult').classList.remove('hidden');
+    
+    updateTradeTotal();
+    renderStockChart();
+}
+
+function renderStockChart() {
+    const ctx = document.getElementById('stockChart').getContext('2d');
+    const symbol = AppState.currentStock.symbol;
+    
+    // Generate mock history
+    const labels = [];
+    const data = [];
+    let price = AppState.currentStock.price * 0.9;
+    
+    for (let i = 30; i >= 0; i--) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        labels.push(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+        price = price * (1 + (Math.random() * 0.06 - 0.03));
+        data.push(price);
+    }
+    
+    if (AppState.charts.stock) AppState.charts.stock.destroy();
+    
+    AppState.charts.stock = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: symbol,
+                data: data,
+                borderColor: '#1B3A5F',
+                backgroundColor: 'rgba(27, 58, 95, 0.1)',
+                fill: true,
+                tension: 0.1,
+                pointRadius: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { ticks: { callback: v => '$' + v.toFixed(0) } }
+            }
+        }
+    });
+}
+
+function updateTradeTotal() {
+    if (!AppState.currentStock) return;
+    const shares = parseInt(document.getElementById('tradeShares').value) || 0;
+    const total = shares * AppState.currentStock.price;
+    document.getElementById('tradeTotal').value = formatCurrency(total);
+}
+
+function executeTrade(type) {
+    if (!AppState.currentStock) return;
+    
+    const shares = parseInt(document.getElementById('tradeShares').value);
+    if (!shares || shares < 1) {
+        showNotification('Enter valid share amount', 'error');
+        return;
+    }
+    
+    const portfolio = AppState.portfolios[AppState.currentUser.id];
+    const total = shares * AppState.currentStock.price;
+    const symbol = AppState.currentStock.symbol;
+    
+    if (type === 'buy') {
+        if (portfolio.cash < total) {
+            showNotification('Insufficient funds', 'error');
+            return;
+        }
+        
+        portfolio.cash -= total;
+        
+        const existing = portfolio.holdings.find(h => h.symbol === symbol);
+        if (existing) {
+            const newShares = existing.shares + shares;
+            existing.avgPrice = ((existing.avgPrice * existing.shares) + total) / newShares;
+            existing.shares = newShares;
+        } else {
+            portfolio.holdings.push({
+                symbol: symbol,
+                shares: shares,
+                avgPrice: AppState.currentStock.price,
+                acquiredAt: new Date().toISOString()
+            });
+        }
+    } else {
+        const holding = portfolio.holdings.find(h => h.symbol === symbol);
+        if (!holding || holding.shares < shares) {
+            showNotification('Insufficient shares', 'error');
+            return;
+        }
+        
+        portfolio.cash += total;
+        holding.shares -= shares;
+        if (holding.shares === 0) {
+            portfolio.holdings = portfolio.holdings.filter(h => h.symbol !== symbol);
+        }
+    }
+    
+    // Record transaction
+    const transaction = {
+        id: generateId(),
+        symbol: symbol,
+        type: type,
+        shares: shares,
+        price: AppState.currentStock.price,
+        total: total,
+        date: new Date().toISOString()
+    };
+    
+    if (!AppState.transactions[AppState.currentUser.id]) {
+        AppState.transactions[AppState.currentUser.id] = [];
+    }
+    AppState.transactions[AppState.currentUser.id].push(transaction);
+    
+    showNotification(`${type.toUpperCase()} executed: ${shares} shares of ${symbol}`);
+    loadTrading(); // Refresh display
+}
+
+// Admin Functions
+function loadAdmin() {
+    // Stats
+    const totalUsers = AppState.users.length;
+    const pending = AppState.users.filter(u => u.status === 'pending').length;
+    const allTrans = Object.values(AppState.transactions).flat();
+    const totalVolume = allTrans.reduce((sum, t) => sum + t.total, 0);
+    
+    document.getElementById('admin-totalUsers').textContent = totalUsers;
+    document.getElementById('admin-pending').textContent = pending;
+    document.getElementById('admin-volume').textContent = formatCurrency(totalVolume);
+    document.getElementById('admin-transactions').textContent = allTrans.length;
+    
+    // Activity
+    const activityBody = document.getElementById('admin-activity');
+    const recentTrans = allTrans.slice(-10).reverse();
+    activityBody.innerHTML = recentTrans.map(t => {
+        const user = AppState.users.find(u => u.id === Object.keys(AppState.transactions).find(key => 
+            AppState.transactions[key].includes(t)
+        ));
+        return `
+            <tr>
+                <td>${new Date(t.date).toLocaleString()}</td>
+                <td>${user ? user.username : 'Unknown'}</td>
+                <td><span class="status-badge status-${t.type === 'buy' ? 'approved' : 'suspended'}">${t.type.toUpperCase()}</span></td>
+                <td>${t.shares} ${t.symbol} @ ${formatCurrency(t.total)}</td>
+            </tr>
+        `;
+    }).join('');
+    
+    renderAdminUsers();
+    renderAdminApprovals();
+    renderAdminTransactions();
+}
+
+function renderAdminUsers() {
+    const tbody = document.getElementById('admin-users-table');
+    tbody.innerHTML = AppState.users.map(u => {
+        const portfolio = AppState.portfolios[u.id];
+        const value = portfolio ? portfolio.cash + portfolio.holdings.reduce((sum, h) => sum + (h.shares * h.avgPrice), 0) : 0;
+        return `
+            <tr>
+                <td>${u.id.substr(0, 8)}...</td>
+                <td>${u.username}</td>
+                <td>${u.email}</td>
+                <td><span class="status-badge status-${u.status}">${u.status}</span></td>
+                <td>${formatCurrency(value)}</td>
+                <td>
+                    <button class="btn btn-primary btn-small" onclick="viewUserDetails('${u.id}')">View</button>
+                    ${u.status === 'pending' ? `<button class="btn btn-success btn-small" onclick="approveUser('${u.id}')">Approve</button>` : ''}
+                </td>
+            </tr>
+        `;
+    }).join('');
+}
+
+function renderAdminApprovals() {
+    const tbody = document.getElementById('admin-approvals-table');
+    const pending = AppState.users.filter(u => u.status === 'pending');
+    
+    if (pending.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 2rem;">No pending approvals</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = pending.map(u => `
+        <tr>
+            <td>${u.username}</td>
+            <td>${u.email}</td>
+            <td>${new Date(u.createdAt).toLocaleString()}</td>
+            <td>
+                <button class="btn btn-success btn-small" onclick="approveUser('${u.id}')">✓ Approve</button>
+                <button class="btn btn-danger btn-small" onclick="rejectUser('${u.id}')">✗ Reject</button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+function renderAdminTransactions() {
+    const tbody = document.getElementById('admin-transactions-table');
+    const allTrans = Object.entries(AppState.transactions).flatMap(([userId, trans]) => 
+        trans.map(t => ({ ...t, userId }))
+    ).sort((a, b) => new Date(b.date) - new Date(a.date));
+    
+    tbody.innerHTML = allTrans.slice(0, 50).map(t => {
+        const user = AppState.users.find(u => u.id === t.userId);
+        return `
+            <tr>
+                <td>${new Date(t.date).toLocaleString()}</td>
+                <td>${user ? user.username : t.userId.substr(0, 8)}</td>
+                <td><span class="status-badge status-${t.type === 'buy' ? 'approved' : 'suspended'}">${t.type.toUpperCase()}</span></td>
+                <td><strong>${t.symbol}</strong></td>
+                <td>${t.shares}</td>
+                <td>${formatCurrency(t.total)}</td>
+            </tr>
+        `;
+    }).join('');
+}
+
+function showAdminTab(tab) {
+    document.querySelectorAll('[id^="admin-section-"]').forEach(el => el.classList.add('hidden'));
+    document.getElementById(`admin-section-${tab}`).classList.remove('hidden');
+    
+    document.querySelectorAll('.admin-nav a').forEach(a => a.classList.remove('active'));
+    document.getElementById(`admin-tab-${tab}`).classList.add('active');
+}
+
+function approveUser(userId) {
+    const user = AppState.users.find(u => u.id === userId);
+    if (user) {
+        user.status = 'approved';
+        showNotification(`Approved ${user.username}`);
+        loadAdmin();
+    }
+}
+
+function rejectUser(userId) {
+    const user = AppState.users.find(u => u.id === userId);
+    if (user) {
+        user.status = 'suspended';
+        showNotification(`Rejected ${user.username}`);
+        loadAdmin();
+    }
+}
+
+function viewUserDetails(userId) {
+    AppState.selectedUserId = userId;
+    const user = AppState.users.find(u => u.id === userId);
+    const portfolio = AppState.portfolios[userId];
+    const trans = AppState.transactions[userId] || [];
+    
+    document.getElementById('userModalBody').innerHTML = `
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+            <div>
+                <h4 style="color: var(--redwood-dark); margin-bottom: 1rem;">Account Info</h4>
+                <p><strong>ID:</strong> ${user.id}</p>
+                <p><strong>Name:</strong> ${user.fullName}</p>
+                <p><strong>Email:</strong> ${user.email}</p>
+                <p><strong>Status:</strong> <span class="status-badge status-${user.status}">${user.status}</span></p>
+                <p><strong>Joined:</strong> ${new Date(user.createdAt).toLocaleString()}</p>
+            </div>
+            <div>
+                <h4 style="color: var(--redwood-dark); margin-bottom: 1rem;">Portfolio</h4>
+                <p><strong>Cash:</strong> ${formatCurrency(portfolio.cash)}</p>
+                <p><strong>Holdings:</strong> ${portfolio.holdings.length} positions</p>
+                <p><strong>Recent Trades:</strong> ${trans.length}</p>
+            </div>
+        </div>
+    `;
+    
+    document.getElementById('userModal').classList.add('active');
+}
+
+function closeUserModal() {
+    document.getElementById('userModal').classList.remove('active');
+    AppState.selectedUserId = null;
+}
+
+function toggleUserStatus() {
+    if (!AppState.selectedUserId) return;
+    const user = AppState.users.find(u => u.id === AppState.selectedUserId);
+    user.status = user.status === 'suspended' ? 'approved' : 'suspended';
+    showNotification(`User ${user.status === 'suspended' ? 'suspended' : 'reactivated'}`);
+    closeUserModal();
+    loadAdmin();
+}
+
+function resetUserPortfolio() {
+    if (!AppState.selectedUserId) return;
+    if (!confirm('Reset portfolio to $100,000?')) return;
+    
+    AppState.portfolios[AppState.selectedUserId] = { cash: 100000, holdings: [], totalDeposited: 100000 };
+    AppState.transactions[AppState.selectedUserId] = [];
+    showNotification('Portfolio reset');
+    closeUserModal();
+    loadAdmin();
+}
+
+function filterUsers(search) {
+    const rows = document.querySelectorAll('#admin-users-table tr');
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(search.toLowerCase()) ? '' : 'none';
+    });
+}
+
+// Initialize
+initDatabase();
+showPage('auth');
+
+// Check for admin key field toggle
+document.getElementById('loginEmail').addEventListener('input', (e) => {
+    if (e.target.value.includes('admin')) {
+        document.getElementById('adminKeyGroup').classList.remove('hidden');
+    } else {
+        document.getElementById('adminKeyGroup').classList.add('hidden');
+    }
+});
+</script>
+
+</body>
+</html>
